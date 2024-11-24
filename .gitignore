@@ -8,7 +8,7 @@ node_modules/
 # Ignore build directories.
 /build
 /dist
-/static
+/client/static
 
 # ignore composer vendor directory
 /vendor
