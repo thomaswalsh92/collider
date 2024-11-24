@@ -2,13 +2,11 @@
 ///// IMPORT
 import "./main.css";
 import * as THREE from "three";
-import { TWEEN } from "three/examples/jsm/libs/tween.module.min.js";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 
 /////////////////////////////////////////////////////////////////////////
-//// DRACO LOADER TO LOAD DRACO COMPRESSED MODELS FROM BLENDER
+// DRACO
 const dracoLoader = new DRACOLoader();
 const loader = new GLTFLoader();
 dracoLoader.setDecoderPath("https://www.gstatic.com/draco/v1/decoders/");
@@ -41,7 +39,7 @@ const camera = new THREE.PerspectiveCamera(
   1,
   100
 );
-camera.position.set(34, 16, -20);
+camera.position.set(0, 0, 30);
 scene.add(camera);
 
 /////////////////////////////////////////////////////////////////////////
@@ -55,10 +53,6 @@ window.addEventListener("resize", () => {
   renderer.setSize(width, height);
   renderer.setPixelRatio(2);
 });
-
-/////////////////////////////////////////////////////////////////////////
-///// CREATE ORBIT CONTROLS
-const controls = new OrbitControls(camera, renderer.domElement);
 
 /////////////////////////////////////////////////////////////////////////
 ///// SCENE LIGHTS
@@ -76,52 +70,8 @@ loader.load("models/gltf/ring3.glb", function (gltf) {
 });
 
 /////////////////////////////////////////////////////////////////////////
-//// INTRO CAMERA ANIMATION USING TWEEN
-function introAnimation() {
-  controls.enabled = false; //disable orbit controls to animate the camera
-
-  new TWEEN.Tween(camera.position.set(26, 4, -35))
-    .to(
-      {
-        // from camera position
-        x: 16, //desired x position to go
-        y: 50, //desired y position to go
-        z: -0.1, //desired z position to go
-      },
-      6500
-    ) // time take to animate
-    .delay(1000)
-    .easing(TWEEN.Easing.Quartic.InOut)
-    .start() // define delay, easing
-    .onComplete(function () {
-      //on finish animation
-      controls.enabled = true; //enable orbit controls
-      setOrbitControlsLimits(); //enable controls limits
-      TWEEN.remove(this); // remove the animation from memory
-    });
-}
-
-introAnimation(); // call intro animation on start
-
-/////////////////////////////////////////////////////////////////////////
-//// DEFINE ORBIT CONTROLS LIMITS
-function setOrbitControlsLimits() {
-  controls.enableDamping = true;
-  controls.dampingFactor = 0.04;
-  controls.minDistance = 35;
-  controls.maxDistance = 60;
-  controls.enableRotate = true;
-  controls.enableZoom = true;
-  controls.maxPolarAngle = Math.PI / 2.5;
-}
-
-/////////////////////////////////////////////////////////////////////////
 //// RENDER LOOP FUNCTION
 function rendeLoop() {
-  TWEEN.update(); // update animations
-
-  controls.update(); // update orbit controls
-
   renderer.render(scene, camera); // render the scene using the camera
 
   requestAnimationFrame(rendeLoop); //loop the render function
