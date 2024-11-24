@@ -3,6 +3,7 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 import { useOSC } from "./utils/useOSC";
+import { useModel } from "./utils/useModel";
 
 // DRACO
 const dracoLoader = new DRACOLoader();
@@ -57,6 +58,9 @@ scene.add(sunLight);
 
 //LOADING GLB/GLTF MODEL FROM BLENDER
 loader.load("models/gltf/ring3.glb", function (gltf) {
+  gltf.scene.children[0].material = new THREE.MeshStandardMaterial({
+    color: "orange",
+  });
   scene.add(gltf.scene);
 });
 
@@ -68,7 +72,7 @@ function rendeLoop() {
 }
 
 //TEST BED
-const hello = useOSC("note1", () => {
+useOSC("note1", () => {
   console.log("NOTE1");
 });
 
