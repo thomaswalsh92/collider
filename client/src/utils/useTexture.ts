@@ -1,23 +1,22 @@
-// import * as THREE from "three";
+import * as THREE from "three";
 
-// import { TextureLoader } from "three/examples/jsm/loaders/TextureLoad.js";
+// const dracoLoader = new DRACOLoader();
+const loader = new THREE.TextureLoader();
+// dracoLoader.setDecoderPath("https://www.gstatic.com/draco/v1/decoders/");
+// dracoLoader.setDecoderConfig({ type: "js" });
+// loader.setDRACOLoader(dracoLoader);
 
-// // const dracoLoader = new DRACOLoader();
-// const loader = new TextureLoader();
-// // dracoLoader.setDecoderPath("https://www.gstatic.com/draco/v1/decoders/");
-// // dracoLoader.setDecoderConfig({ type: "js" });
-// // loader.setDRACOLoader(dracoLoader);
-
+export interface ITextureDetails {
+  path: string;
+}
 // export const useTexture = async (
-//   path: string,
-//   onLoad: (model: any) => void,
-//   scene?: THREE.Scene
+//   { path, type }: ITextureDetails,
+//   onLoad: (texture: any) => void
 // ) => {
 //   try {
-//     loader.load(path, (model) => {
-//       onLoad(model);
-//       scene && scene.add(model.scene);
-//     });
+//     let thisTexture;
+//     loader.loadAsync(path);
+//     return thisTexture;
 //   } catch (err) {
 //     console.log(err);
 //   }

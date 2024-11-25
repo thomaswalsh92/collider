@@ -59,7 +59,12 @@ scene.add(sunLight);
 //LOADING GLB/GLTF MODEL FROM BLENDER
 
 const loadModel = async () => {
-  await useModel("models/gltf/ring3.glb", (model) => console.log(model), scene);
+  useModel({
+    modelPath: "models/gltf/ring3.glb",
+    textureDetails: { path: "textures/ring3-diffuse.png" },
+    scene: scene,
+  });
+  //await useModel(path: "models/gltf/ring3.glb", onLoad: (model) => {console.log(model)}, scene: scene);
 };
 
 loadModel();
