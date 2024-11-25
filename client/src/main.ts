@@ -1,25 +1,27 @@
-import "./main.css";
+//libs
 import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
-import { useOSC } from "./utils/useOSC";
-import { useModel } from "./utils/useModel";
+
+//collider
+import "./main.css";
+import { Rings } from "./visual-components/Rings";
 
 //loading manager used by useModel
-const manager = new THREE.LoadingManager();
+export const manager = new THREE.LoadingManager();
 
 /////div creation
 const container = document.createElement("div");
 document.body.appendChild(container);
 
 //scene creation
-const scene = new THREE.Scene();
-scene.background = new THREE.Color("#c8f0f9");
+export const scene = new THREE.Scene();
+scene.background = new THREE.Color("#09080f");
 
 //render config
 const renderer = new THREE.WebGLRenderer({ antialias: true }); // turn on antialias
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); //set pixel ratio
 renderer.setSize(window.innerWidth, window.innerHeight); // make it full screen
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 // renderer.outputEncoding = THREE.sRGBEncoding; // set color encoding
 container.appendChild(renderer.domElement); // add the renderer to html div
 
@@ -50,55 +52,30 @@ scene.add(ambient);
 
 const sunLight = new THREE.DirectionalLight(0xe8c37b, 1.96);
 sunLight.position.set(-69, 44, 14);
+sunLight.castShadow = true;
 scene.add(sunLight);
 
-//Before the app is started, import all models here.
-//At some point this can be moved into individual visual componenent hierarchy.
-const loadModel = async () => {
-  await useModel({
-    modelPath: "models/gltf/ring3.glb",
-    textures: [
-      { path: "textures/ring3-diffuse.png", type: "map" },
-      { path: "textures/ring3-roughnessMap.png", type: "roughnessMap" },
-      { path: "textures/ring3-normalMap.png", type: "normalMap" },
-    ],
-    scene: scene,
-    manager: manager,
-  });
-};
-
-loadModel();
+//load models for all components
+//todo add a Controller method which will load models from a list. Maybe JSON?
+const rings = new Rings();
+rings.loadModels();
 
 //this handler runs when all assets are loaded. From here we can start the app.
 manager.onLoad = () => {
-  console.log("Loading complete!");
-  console.log("Logging imported meshes:");
-  const importedAssets = scene.children.filter((child) => {
-    if (child.userData.importedMesh) {
-      return child;
-    }
-  });
-  console.log(importedAssets);
-  start(importedAssets);
+  rings.initComponent();
+  start();
 };
 
 //start app with list of all imported objects
-const start = (
-  assets: (THREE.Object3D<THREE.Object3DEventMap> | undefined)[]
-) => {
-  let mostRecentMessage: number = 1;
-  // useOSC("note1", () => {
-  //   mostRecentMessage = 1;
-  // });
-
-  // useOSC("note3", () => {
-  //   mostRecentMessage = 3;
-  // });
-
+const start = () => {
   const renderLoop = () => {
-    const ring3 = assets.find((asset) => asset?.name === "ring3");
     requestAnimationFrame(renderLoop); //loop the render function
     renderer.render(scene, camera); // render the scene using the camera
+
+    //todo refactor here to start Controller class which will control the swapping in and out of different components
+    rings.animateRing1();
+    rings.animateRing2();
+    rings.animateRing3();
   };
 
   renderLoop(); //start rendering

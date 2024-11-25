@@ -17,7 +17,8 @@ type TextureInfo = {
   type: AllowedTextureTypes;
 };
 
-//ASSUMPTION - using useModel assumes that each GLTF file imported has only one object, or automatic assignment of textures won't work
+//!ASSUMPTION - using useModel assumes that each GLTF file imported has only one object, or automatic assignment of textures won't work
+//!code only takes index 0 of gltf.scene.children so only first exported object will work in each GLTF file
 export const useModel = async ({
   modelPath,
   textures,
@@ -39,29 +40,29 @@ export const useModel = async ({
       textures.forEach((tex, index) => {
         textureLoader.load(tex.path, (loadedTex) => {
           modelTextures.push({ texture: loadedTex, type: tex.type });
-          //end of textures list reached, load model
+          //end of textures list reached. All textures are now loaded, now load model
           if (index === textures.length - 1) {
             try {
               modelLoader.load(modelPath, (gltf) => {
-                gltf.scene.children.forEach((child) => {
-                  const mesh = child as unknown as THREE.Mesh;
-                  const mat = new THREE.MeshStandardMaterial();
-                  //go through list of imported textures and assign to correct material parameters
-                  modelTextures.forEach((tex) => {
-                    if (tex.type === "map") {
-                      mat.map = tex.texture;
-                    }
-                    if (tex.type === "normalMap") {
-                      mat.normalMap = tex.texture;
-                    }
-                    if (tex.type === "roughnessMap") {
-                      mat.roughnessMap = tex.texture;
-                    }
-                  });
-                  mesh.material = mat;
-                  mesh.userData = { importedMesh: true };
-                  scene.add(mesh);
+                //pretty dirty cast but it works ok and there is a missing/incorrect type for gltf
+                const mesh = gltf.scene.children[0] as unknown as THREE.Mesh;
+                const mat = new THREE.MeshStandardMaterial();
+                //go through list of imported textures and assign to correct material parameters
+                modelTextures.forEach((tex) => {
+                  if (tex.type === "map") {
+                    mat.map = tex.texture;
+                  }
+                  if (tex.type === "normalMap") {
+                    mat.normalMap = tex.texture;
+                  }
+                  if (tex.type === "roughnessMap") {
+                    mat.roughnessMap = tex.texture;
+                  }
                 });
+                mesh.material = mat;
+                mesh.userData = { importedMesh: true };
+                mesh.receiveShadow = true;
+                scene.add(mesh);
               });
             } catch (err) {
               console.log("error loading model: ", err);
