@@ -4,20 +4,23 @@ import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 
 interface IUseModelProps {
   modelPath: string;
-  textureDetails?: TextureDetails;
+  textures?: TextureInfo[];
   scene: THREE.Scene;
   manager: THREE.LoadingManager;
 }
 
-type TextureDetails = {
+//note - manual list of allowed texture types until I figure out how to insert these values based on the MeshStandardMaterialsParams type
+type AllowedTextureTypes = "map" | "normalMap" | "roughnessMap";
+
+type TextureInfo = {
   path: string;
+  type: AllowedTextureTypes;
 };
 
-type TextureDetailsArr = TextureDetails[];
-
+//ASSUMPTION - using useModel assumes that each GLTF file imported has only one object, or automatic assignment of textures won't work
 export const useModel = async ({
   modelPath,
-  textureDetails,
+  textures,
   scene,
   manager,
 }: IUseModelProps) => {
@@ -28,23 +31,44 @@ export const useModel = async ({
   dracoLoader.setDecoderConfig({ type: "js" });
   modelLoader.setDRACOLoader(dracoLoader);
 
-  if (textureDetails) {
-    let modelTexture: THREE.Texture;
+  if (Array.isArray(textures) && textures.length > 0) {
+    //covert details of textures into array of imported textures and associated type
+    let modelTextures: { texture: THREE.Texture; type: AllowedTextureTypes }[] =
+      [];
     try {
-      modelTexture = textureLoader.load(textureDetails.path);
-      try {
-        modelLoader.load(modelPath, (gltf) => {
-          gltf.scene.children.forEach((child) => {
-            const mesh = child as unknown as THREE.Mesh;
-            const mat = new THREE.MeshStandardMaterial({ map: modelTexture });
-            mesh.material = mat;
-            mesh.userData = { importedMesh: true };
-            scene.add(mesh);
-          });
+      textures.forEach((tex, index) => {
+        textureLoader.load(tex.path, (loadedTex) => {
+          modelTextures.push({ texture: loadedTex, type: tex.type });
+          //end of textures list reached, load model
+          if (index === textures.length - 1) {
+            try {
+              modelLoader.load(modelPath, (gltf) => {
+                gltf.scene.children.forEach((child) => {
+                  const mesh = child as unknown as THREE.Mesh;
+                  const mat = new THREE.MeshStandardMaterial();
+                  //go through list of imported textures and assign to correct material parameters
+                  modelTextures.forEach((tex) => {
+                    if (tex.type === "map") {
+                      mat.map = tex.texture;
+                    }
+                    if (tex.type === "normalMap") {
+                      mat.normalMap = tex.texture;
+                    }
+                    if (tex.type === "roughnessMap") {
+                      mat.roughnessMap = tex.texture;
+                    }
+                  });
+                  mesh.material = mat;
+                  mesh.userData = { importedMesh: true };
+                  scene.add(mesh);
+                });
+              });
+            } catch (err) {
+              console.log("error loading model: ", err);
+            }
+          }
         });
-      } catch (err) {
-        console.log("error loading model: ", err);
-      }
+      });
     } catch (err) {
       console.log("error loading texture: ", err);
     }

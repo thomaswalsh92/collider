@@ -57,7 +57,11 @@ scene.add(sunLight);
 const loadModel = async () => {
   await useModel({
     modelPath: "models/gltf/ring3.glb",
-    textureDetails: { path: "textures/ring3-diffuse.png" },
+    textures: [
+      { path: "textures/ring3-diffuse.png", type: "map" },
+      { path: "textures/ring3-roughnessMap.png", type: "roughnessMap" },
+      { path: "textures/ring3-normalMap.png", type: "normalMap" },
+    ],
     scene: scene,
     manager: manager,
   });
@@ -83,28 +87,16 @@ const start = (
   assets: (THREE.Object3D<THREE.Object3DEventMap> | undefined)[]
 ) => {
   let mostRecentMessage: number = 1;
-  useOSC("note1", () => {
-    mostRecentMessage = 1;
-  });
+  // useOSC("note1", () => {
+  //   mostRecentMessage = 1;
+  // });
 
-  useOSC("note3", () => {
-    mostRecentMessage = 3;
-  });
+  // useOSC("note3", () => {
+  //   mostRecentMessage = 3;
+  // });
 
   const renderLoop = () => {
     const ring3 = assets.find((asset) => asset?.name === "ring3");
-
-    if (mostRecentMessage === 1) {
-      ring3?.rotateX(0.002);
-      ring3?.rotateY(0.004);
-      ring3?.rotateZ(0.004);
-    }
-
-    if (mostRecentMessage === 3) {
-      ring3?.rotateX(-0.004);
-      ring3?.rotateY(0.006);
-      ring3?.rotateZ(-0.003);
-    }
     requestAnimationFrame(renderLoop); //loop the render function
     renderer.render(scene, camera); // render the scene using the camera
   };
