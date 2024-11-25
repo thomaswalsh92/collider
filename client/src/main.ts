@@ -1,5 +1,6 @@
 //libs
 import * as THREE from "three";
+import * as TWEEN from "@tweenjs/tween.js";
 
 //collider
 import "./main.css";
@@ -63,6 +64,7 @@ rings.loadModels();
 //this handler runs when all assets are loaded. From here we can start the app.
 manager.onLoad = () => {
   rings.initComponent();
+  rings.initOSC();
   start();
 };
 
@@ -76,6 +78,7 @@ const start = () => {
     rings.animateRing1();
     rings.animateRing2();
     rings.animateRing3();
+    rings.updateTweens();
   };
 
   renderLoop(); //start rendering

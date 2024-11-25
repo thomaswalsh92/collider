@@ -1,5 +1,6 @@
 //libs
 import * as THREE from "three";
+import * as TWEEN from "@tweenjs/tween.js";
 
 //collider
 import { manager, scene } from "../main";
@@ -10,8 +11,36 @@ export class Rings {
   ring1: THREE.Object3D<THREE.Object3DEventMap> | undefined = undefined;
   ring2: THREE.Object3D<THREE.Object3DEventMap> | undefined = undefined;
   ring3: THREE.Object3D<THREE.Object3DEventMap> | undefined = undefined;
-  light: THREE.PointLight = new THREE.PointLight("#ff0099", 5);
+  light: THREE.PointLight = new THREE.PointLight("#ff0011", 0);
   latestNote: number = 1;
+
+  minSpinRate: number = 0.2;
+  maxSpinRate: number = 3;
+  variableSpinRate: number = this.minSpinRate;
+  spinRateTweenUp = new TWEEN.Tween({ rate: this.minSpinRate })
+    .to({ rate: this.maxSpinRate }, 400)
+    .onUpdate(({ rate }) => {
+      this.variableSpinRate = rate;
+    });
+  spinRateTweenDown = new TWEEN.Tween({ rate: this.maxSpinRate })
+    .to({ rate: this.minSpinRate }, 400)
+    .onUpdate(({ rate }) => {
+      this.variableSpinRate = rate;
+    });
+
+  maxIntensity: number = 10;
+  minIntensity: number = 0;
+  lightPulseTween = new TWEEN.Tween({ intensity: this.maxIntensity })
+    .to(
+      {
+        intensity: this.minIntensity,
+      },
+      1400
+    )
+    .easing(TWEEN.Easing.Quadratic.Out)
+    .onUpdate(({ intensity }) => {
+      this.light.intensity = intensity;
+    });
 
   loadModels() {
     useModel({
@@ -56,34 +85,44 @@ export class Rings {
     this.light.castShadow = true;
     this.light.shadow.camera.near = 0.1;
     this.light.shadow.camera.far = 100;
+    this.light.position.set(0, 0, 0);
     scene.add(this.light);
   }
 
   initOSC() {
     useOSC("note1", () => {
-      this.latestNote = 1;
+      this.spinRateTweenDown.stop();
+      this.spinRateTweenUp.start();
+      this.lightPulseTween.start();
     });
 
-    useOSC("note3", () => {
-      this.latestNote = 3;
+    useOSC("note2", () => {
+      this.spinRateTweenUp.stop();
+      this.spinRateTweenDown.start();
     });
   }
 
   animateRing1() {
-    this.ring1?.rotateX(0.004);
-    this.ring1?.rotateY(0.003);
-    this.ring1?.rotateZ(0.002);
+    this.ring1?.rotateX(0.004 * this.variableSpinRate);
+    this.ring1?.rotateY(0.003 * this.variableSpinRate);
+    this.ring1?.rotateZ(0.002 * this.variableSpinRate);
   }
 
   animateRing2() {
-    this.ring2?.rotateX(0.006);
-    this.ring2?.rotateY(0.005);
-    this.ring2?.rotateZ(0.003);
+    this.ring2?.rotateX(0.006 * this.variableSpinRate);
+    this.ring2?.rotateY(0.005 * this.variableSpinRate);
+    this.ring2?.rotateZ(0.003 * this.variableSpinRate);
   }
 
   animateRing3() {
-    this.ring3?.rotateX(0.01);
-    this.ring3?.rotateY(0.008);
-    this.ring3?.rotateZ(0.005);
+    this.ring3?.rotateX(0.01 * this.variableSpinRate);
+    this.ring3?.rotateY(0.008 * this.variableSpinRate);
+    this.ring3?.rotateZ(0.005 * this.variableSpinRate);
+  }
+
+  updateTweens() {
+    this.spinRateTweenUp.update();
+    this.spinRateTweenDown.update();
+    this.lightPulseTween.update();
   }
 }
