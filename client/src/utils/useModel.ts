@@ -13,6 +13,8 @@ type TextureDetails = {
   path: string;
 };
 
+type TextureDetailsArr = TextureDetails[];
+
 export const useModel = async ({
   modelPath,
   textureDetails,

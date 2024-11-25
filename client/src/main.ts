@@ -5,25 +5,25 @@ import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 import { useOSC } from "./utils/useOSC";
 import { useModel } from "./utils/useModel";
 
-// DRACO / LOADERS
+//loading manager used by useModel
 const manager = new THREE.LoadingManager();
 
-///// DIV CONTAINER CREATION TO HOLD THREEJS EXPERIENCE
+/////div creation
 const container = document.createElement("div");
 document.body.appendChild(container);
 
-//SCENE CREATION
+//scene creation
 const scene = new THREE.Scene();
 scene.background = new THREE.Color("#c8f0f9");
 
-//RENDERER CONFIG
+//render config
 const renderer = new THREE.WebGLRenderer({ antialias: true }); // turn on antialias
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); //set pixel ratio
 renderer.setSize(window.innerWidth, window.innerHeight); // make it full screen
 // renderer.outputEncoding = THREE.sRGBEncoding; // set color encoding
 container.appendChild(renderer.domElement); // add the renderer to html div
 
-//CAMERAS CONFIG
+//cam config
 const camera = new THREE.PerspectiveCamera(
   35,
   window.innerWidth / window.innerHeight,
@@ -33,7 +33,7 @@ const camera = new THREE.PerspectiveCamera(
 camera.position.set(0, 0, 30);
 scene.add(camera);
 
-//MAKE EXPERIENCE FULL SCREEN
+//screen config
 window.addEventListener("resize", () => {
   const width = window.innerWidth;
   const height = window.innerHeight;
@@ -44,7 +44,7 @@ window.addEventListener("resize", () => {
   renderer.setPixelRatio(2);
 });
 
-//SCENE LIGHTS
+//lights
 const ambient = new THREE.AmbientLight(0xa0a0fc, 0.82);
 scene.add(ambient);
 
@@ -53,7 +53,7 @@ sunLight.position.set(-69, 44, 14);
 scene.add(sunLight);
 
 //Before the app is started, import all models here.
-//At some point this can be moved into individual visual componenet hierarchy.
+//At some point this can be moved into individual visual componenent hierarchy.
 const loadModel = async () => {
   await useModel({
     modelPath: "models/gltf/ring3.glb",
@@ -65,6 +65,7 @@ const loadModel = async () => {
 
 loadModel();
 
+//this handler runs when all assets are loaded. From here we can start the app.
 manager.onLoad = () => {
   console.log("Loading complete!");
   console.log("Logging imported meshes:");
@@ -89,17 +90,20 @@ const start = (
   useOSC("note3", () => {
     mostRecentMessage = 3;
   });
+
   const renderLoop = () => {
     const ring3 = assets.find((asset) => asset?.name === "ring3");
 
     if (mostRecentMessage === 1) {
       ring3?.rotateX(0.002);
       ring3?.rotateY(0.004);
+      ring3?.rotateZ(0.004);
     }
 
     if (mostRecentMessage === 3) {
-      ring3?.rotateX(0.01);
-      ring3?.rotateY(0.04);
+      ring3?.rotateX(-0.004);
+      ring3?.rotateY(0.006);
+      ring3?.rotateZ(-0.003);
     }
     requestAnimationFrame(renderLoop); //loop the render function
     renderer.render(scene, camera); // render the scene using the camera
