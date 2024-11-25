@@ -2,7 +2,8 @@ import "./main.css";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
-// import { useOSC } from "./utils/useOSC";
+import { useOSC } from "./utils/useOSC";
+import { useModel } from "./utils/useModel";
 
 // DRACO
 const dracoLoader = new DRACOLoader();
@@ -56,9 +57,12 @@ sunLight.position.set(-69, 44, 14);
 scene.add(sunLight);
 
 //LOADING GLB/GLTF MODEL FROM BLENDER
-loader.load("models/gltf/ring3.glb", function (gltf) {
-  scene.add(gltf.scene);
-});
+
+const loadModel = async () => {
+  await useModel("models/gltf/ring3.glb", (model) => console.log(model), scene);
+};
+
+loadModel();
 
 //RENDER LOOP FUNCTION
 function rendeLoop() {
@@ -68,9 +72,9 @@ function rendeLoop() {
 }
 
 //TEST BED
-// useOSC("note1", () => {
-//   console.log("NOTE1");
-// });
+useOSC("note1", () => {
+  console.log("NOTE1");
+});
 
 // hello();
 
