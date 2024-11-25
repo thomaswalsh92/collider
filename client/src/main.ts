@@ -2,8 +2,7 @@ import "./main.css";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
-import { useOSC } from "./utils/useOSC";
-import { useModel } from "./utils/useModel";
+// import { useOSC } from "./utils/useOSC";
 
 // DRACO
 const dracoLoader = new DRACOLoader();
@@ -24,7 +23,7 @@ scene.background = new THREE.Color("#c8f0f9");
 const renderer = new THREE.WebGLRenderer({ antialias: true }); // turn on antialias
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); //set pixel ratio
 renderer.setSize(window.innerWidth, window.innerHeight); // make it full screen
-renderer.outputEncoding = THREE.sRGBEncoding; // set color encoding
+// renderer.outputEncoding = THREE.sRGBEncoding; // set color encoding
 container.appendChild(renderer.domElement); // add the renderer to html div
 
 //CAMERAS CONFIG
@@ -58,9 +57,6 @@ scene.add(sunLight);
 
 //LOADING GLB/GLTF MODEL FROM BLENDER
 loader.load("models/gltf/ring3.glb", function (gltf) {
-  gltf.scene.children[0].material = new THREE.MeshStandardMaterial({
-    color: "orange",
-  });
   scene.add(gltf.scene);
 });
 
@@ -72,9 +68,9 @@ function rendeLoop() {
 }
 
 //TEST BED
-useOSC("note1", () => {
-  console.log("NOTE1");
-});
+// useOSC("note1", () => {
+//   console.log("NOTE1");
+// });
 
 // hello();
 
