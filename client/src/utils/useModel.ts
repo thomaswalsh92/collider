@@ -1,42 +1,48 @@
 import * as THREE from "three";
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
-import { ITextureDetails /*useTexture*/ } from "./useTexture";
-
-const dracoLoader = new DRACOLoader();
-const modelLoader = new GLTFLoader();
-const textureLoader = new THREE.TextureLoader();
-dracoLoader.setDecoderPath("https://www.gstatic.com/draco/v1/decoders/");
-dracoLoader.setDecoderConfig({ type: "js" });
-modelLoader.setDRACOLoader(dracoLoader);
 
 interface IUseModelProps {
   modelPath: string;
-  textureDetails?: ITextureDetails;
+  textureDetails?: TextureDetails;
   scene: THREE.Scene;
+  manager: THREE.LoadingManager;
 }
+
+type TextureDetails = {
+  path: string;
+};
 
 export const useModel = async ({
   modelPath,
   textureDetails,
   scene,
+  manager,
 }: IUseModelProps) => {
+  const dracoLoader = new DRACOLoader();
+  const modelLoader = new GLTFLoader(manager);
+  const textureLoader = new THREE.TextureLoader(manager);
+  dracoLoader.setDecoderPath("https://www.gstatic.com/draco/v1/decoders/");
+  dracoLoader.setDecoderConfig({ type: "js" });
+  modelLoader.setDRACOLoader(dracoLoader);
+
   if (textureDetails) {
     let modelTexture: THREE.Texture;
-    let model;
     try {
       modelTexture = textureLoader.load(textureDetails.path);
       try {
         modelLoader.load(modelPath, (gltf) => {
-          const firstMesh = gltf.scene.children[0] as unknown as THREE.Mesh;
-          const mat = new THREE.MeshStandardMaterial({ map: modelTexture });
-          firstMesh.material = mat;
-          scene.add(firstMesh);
+          gltf.scene.children.forEach((child) => {
+            const mesh = child as unknown as THREE.Mesh;
+            const mat = new THREE.MeshStandardMaterial({ map: modelTexture });
+            mesh.material = mat;
+            mesh.userData = { importedMesh: true };
+            scene.add(mesh);
+          });
         });
       } catch (err) {
         console.log("error loading model: ", err);
       }
-      model = modelLoader.load(modelPath, (gltf) => {});
     } catch (err) {
       console.log("error loading texture: ", err);
     }

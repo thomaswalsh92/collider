@@ -5,12 +5,8 @@ import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 import { useOSC } from "./utils/useOSC";
 import { useModel } from "./utils/useModel";
 
-// DRACO
-const dracoLoader = new DRACOLoader();
-const loader = new GLTFLoader();
-dracoLoader.setDecoderPath("https://www.gstatic.com/draco/v1/decoders/");
-dracoLoader.setDecoderConfig({ type: "js" });
-loader.setDRACOLoader(dracoLoader);
+// DRACO / LOADERS
+const manager = new THREE.LoadingManager();
 
 ///// DIV CONTAINER CREATION TO HOLD THREEJS EXPERIENCE
 const container = document.createElement("div");
@@ -56,31 +52,64 @@ const sunLight = new THREE.DirectionalLight(0xe8c37b, 1.96);
 sunLight.position.set(-69, 44, 14);
 scene.add(sunLight);
 
-//LOADING GLB/GLTF MODEL FROM BLENDER
-
+//Before the app is started, import all models here.
+//At some point this can be moved into individual visual componenet hierarchy.
 const loadModel = async () => {
-  useModel({
+  await useModel({
     modelPath: "models/gltf/ring3.glb",
     textureDetails: { path: "textures/ring3-diffuse.png" },
     scene: scene,
+    manager: manager,
   });
-  //await useModel(path: "models/gltf/ring3.glb", onLoad: (model) => {console.log(model)}, scene: scene);
 };
 
 loadModel();
 
+manager.onLoad = () => {
+  console.log("Loading complete!");
+  console.log("Logging imported meshes:");
+  const importedAssets = scene.children.filter((child) => {
+    if (child.userData.importedMesh) {
+      return child;
+    }
+  });
+  console.log(importedAssets);
+  start(importedAssets);
+};
+
+//start app with list of all imported objects
+const start = (
+  assets: (THREE.Object3D<THREE.Object3DEventMap> | undefined)[]
+) => {
+  let mostRecentMessage: number = 1;
+  useOSC("note1", () => {
+    mostRecentMessage = 1;
+  });
+
+  useOSC("note3", () => {
+    mostRecentMessage = 3;
+  });
+  const renderLoop = () => {
+    const ring3 = assets.find((asset) => asset?.name === "ring3");
+
+    if (mostRecentMessage === 1) {
+      ring3?.rotateX(0.002);
+      ring3?.rotateY(0.004);
+    }
+
+    if (mostRecentMessage === 3) {
+      ring3?.rotateX(0.01);
+      ring3?.rotateY(0.04);
+    }
+    requestAnimationFrame(renderLoop); //loop the render function
+    renderer.render(scene, camera); // render the scene using the camera
+  };
+
+  renderLoop(); //start rendering
+};
+
 //RENDER LOOP FUNCTION
-function rendeLoop() {
-  renderer.render(scene, camera); // render the scene using the camera
 
-  requestAnimationFrame(rendeLoop); //loop the render function
-}
-
-//TEST BED
-useOSC("note1", () => {
-  console.log("NOTE1");
-});
+//listen for note messages
 
 // hello();
-
-rendeLoop(); //start rendering
