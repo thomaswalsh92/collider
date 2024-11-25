@@ -42,6 +42,7 @@ export class Rings {
       this.light.intensity = intensity;
     });
 
+  //run at load models step
   loadModels() {
     useModel({
       modelPath: "models/gltf/ring1.glb",
@@ -75,6 +76,7 @@ export class Rings {
     });
   }
 
+  //run at initialise step
   initComponent() {
     this.ring1 = scene.children.find((x) => x.name === "ring1");
     this.ring1?.position.set(0, 0, 0);
@@ -102,6 +104,7 @@ export class Rings {
     });
   }
 
+  //called by anim loop
   animateRing1() {
     this.ring1?.rotateX(0.004 * this.variableSpinRate);
     this.ring1?.rotateY(0.003 * this.variableSpinRate);
