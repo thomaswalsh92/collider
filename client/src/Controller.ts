@@ -1,31 +1,32 @@
 //visual-components
 import { camera, renderer, scene } from "./main";
 import { Rings } from "./visual-components/Rings";
+// import { VisualComponentBase } from "./visual-components/VisualComponentBase";
 
 const rings = new Rings();
+
+//todo add different controller modes
+export type ControllerModes = "randomCycle" | "OSCTriggered";
 
 export class Controller {
   visualComponents = [rings];
   activeComponent: number = 0;
-
+  mode: ControllerModes = "randomCycle";
   loadModels() {
     this.visualComponents.forEach((component) => {
       component.loadModels();
-      console.log("loading all models");
     });
   }
 
   initComponents() {
     this.visualComponents.forEach((component) => {
       component.initComponent();
-      console.log("initialising all component");
     });
   }
 
   initOSC() {
     this.visualComponents.forEach((component) => {
       component.initOSC();
-      console.log("initialising all OSC handlers");
     });
   }
 

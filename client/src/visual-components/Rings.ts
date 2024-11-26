@@ -6,6 +6,7 @@ import * as TWEEN from "@tweenjs/tween.js";
 import { manager, scene, stagingScene } from "../main";
 import { useModel } from "../utils/useModel";
 import { useOSC } from "../utils/useOSC";
+import { VisualComponentBase } from "./VisualComponentBase";
 
 export class Rings {
   //models
