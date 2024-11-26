@@ -7,11 +7,14 @@ export type OSCMessage =
   | "note4"
   | "contour1"
   | "contour2"
-  | "contour3";
+  | "contour3"
+  | "16th"
+  | "bar"
+  | "bpm";
 
 export type UseOSC = (
   subscribeTo: OSCMessage | OSCMessage[],
-  onMessage: () => void
+  onMessage: (args?: any) => void
 ) => void;
 
 const socket = io.connect("http://localhost:3001");
@@ -20,10 +23,10 @@ socket.connect();
 export const useOSC: UseOSC = (subscribeTo, onMessage) => {
   if (Array.isArray(subscribeTo)) {
     for (let i = 0; i < subscribeTo.length; i++) {
-      socket.on(subscribeTo[i], () => onMessage());
+      socket.on(subscribeTo[i], (args) => onMessage(args));
     }
     return;
   }
 
-  socket.on(subscribeTo, () => onMessage());
+  socket.on(subscribeTo, (args) => onMessage(args));
 };

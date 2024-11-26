@@ -104,19 +104,19 @@ udpPort.on("message", ({ address, args }) => {
   // 16th notes elapsed
   if (address === "/16th") {
     // console.log("16th", args[0]);
-    io.emit("BPM: ", { value: args[0] });
+    io.emit("16th", { value: args[0] });
   }
 
   //Bars elapsed
   if (address === "/bar") {
     // console.log("bar", args[0]);
-    io.emit("playing: ", { value: args[0] });
+    io.emit("bar", { value: args[0] });
   }
 
   //BPM
   if (address === "/bpm") {
     // console.log("bpm", args[0]);
-    io.emit("playing: ", { value: args[0] });
+    io.emit("bpm", { value: args[0] });
   }
 });
 

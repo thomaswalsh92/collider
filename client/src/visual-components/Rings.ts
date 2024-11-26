@@ -6,7 +6,6 @@ import * as TWEEN from "@tweenjs/tween.js";
 import { manager, scene, stagingScene } from "../main";
 import { useModel } from "../utils/useModel";
 import { useOSC } from "../utils/useOSC";
-import { VisualComponentBase } from "./VisualComponentBase";
 
 export class Rings {
   //models
@@ -101,13 +100,16 @@ export class Rings {
   }
 
   initOSC() {
-    useOSC("note1", () => {
-      this.spinRateTweenDown.stop();
-      this.spinRateTweenUp.start();
-      this.lightPulseTween.start();
+    useOSC("16th", (args) => {
+      if (args.value === 1) {
+        this.spinRateTweenDown.stop();
+        this.spinRateTweenUp.start();
+        this.lightPulseTween.start();
+      }
     });
 
-    useOSC("note2", () => {
+    useOSC("note3", () => {
+      console.log("note3");
       this.spinRateTweenUp.stop();
       this.spinRateTweenDown.start();
     });
