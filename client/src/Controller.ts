@@ -34,6 +34,7 @@ export class Controller {
   }
 
   start() {
+    this.visualComponents[this.activeComponent].mountComponent();
     const renderLoop = () => {
       requestAnimationFrame(renderLoop); //loop the render function
       renderer.render(scene, camera); // render the scene using the camera

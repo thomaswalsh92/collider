@@ -3,7 +3,7 @@ import * as THREE from "three";
 import * as TWEEN from "@tweenjs/tween.js";
 
 //collider
-import { manager, scene } from "../main";
+import { manager, scene, stagingScene } from "../main";
 import { useModel } from "../utils/useModel";
 import { useOSC } from "../utils/useOSC";
 
@@ -63,7 +63,6 @@ export class Rings {
         { path: "textures/ring1-roughnessMap.png", type: "roughnessMap" },
         { path: "textures/ring1-normalMap.png", type: "normalMap" },
       ],
-      scene: scene,
       manager: manager,
     });
     useModel({
@@ -73,7 +72,6 @@ export class Rings {
         { path: "textures/ring2-roughnessMap.png", type: "roughnessMap" },
         { path: "textures/ring2-normalMap.png", type: "normalMap" },
       ],
-      scene: scene,
       manager: manager,
     });
     useModel({
@@ -83,24 +81,22 @@ export class Rings {
         { path: "textures/ring3-roughnessMap.png", type: "roughnessMap" },
         { path: "textures/ring3-normalMap.png", type: "normalMap" },
       ],
-      scene: scene,
       manager: manager,
     });
   }
 
   //run at initialise step
   initComponent() {
-    this.ring1 = scene.children.find((x) => x.name === "ring1");
+    this.ring1 = stagingScene.children.find((x) => x.name === "ring1");
     this.ring1?.position.set(0, 0, 0);
-    this.ring2 = scene.children.find((x) => x.name === "ring2");
+    this.ring2 = stagingScene.children.find((x) => x.name === "ring2");
     this.ring2?.position.set(0, 0, 0);
-    this.ring3 = scene.children.find((x) => x.name === "ring3");
+    this.ring3 = stagingScene.children.find((x) => x.name === "ring3");
     this.ring3?.position.set(0, 0, 0);
     this.light.castShadow = true;
     this.light.shadow.camera.near = 0.1;
     this.light.shadow.camera.far = 100;
     this.light.position.set(0, 0, 0);
-    scene.add(this.light);
   }
 
   initOSC() {
@@ -114,6 +110,20 @@ export class Rings {
       this.spinRateTweenUp.stop();
       this.spinRateTweenDown.start();
     });
+  }
+
+  mountComponent() {
+    this.ring1 && scene.add(this.ring1);
+    this.ring2 && scene.add(this.ring2);
+    this.ring3 && scene.add(this.ring3);
+    this.light && scene.add(this.light);
+  }
+
+  unmountComponent() {
+    this.ring1 && scene.remove(this.ring1);
+    this.ring2 && scene.remove(this.ring2);
+    this.ring3 && scene.remove(this.ring3);
+    this.light && scene.remove(this.light);
   }
 
   //called by anim loop

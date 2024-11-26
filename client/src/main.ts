@@ -1,6 +1,5 @@
 //libs
 import * as THREE from "three";
-import * as TWEEN from "@tweenjs/tween.js";
 
 //collider
 import "./main.css";
@@ -10,12 +9,13 @@ import { Controller } from "./Controller";
 //loading manager used by useModel
 export const manager = new THREE.LoadingManager();
 
-/////div creation
+//div creation
 const container = document.createElement("div");
 document.body.appendChild(container);
 
 //scene creation
 export const scene = new THREE.Scene();
+export const stagingScene = new THREE.Scene();
 scene.background = new THREE.Color("#09080f");
 
 //render config
@@ -48,7 +48,7 @@ window.addEventListener("resize", () => {
   renderer.setPixelRatio(2);
 });
 
-//lights
+//todo find a place for these lights
 const ambient = new THREE.AmbientLight(0xa0a0fc, 0.82);
 scene.add(ambient);
 
@@ -58,9 +58,9 @@ sunLight.castShadow = true;
 scene.add(sunLight);
 
 //load models for all components
-//todo add a Controller method which will load models from a list. Maybe JSON?
 const controller = new Controller();
 controller.loadModels();
+
 //this handler runs when all assets are loaded. From here we can start the app.
 manager.onLoad = () => {
   controller.initComponents();
@@ -68,13 +68,8 @@ manager.onLoad = () => {
   startApp();
 };
 
-//start app with list of all imported objects
+//start controller on load
 const startApp = () => {
   controller.start();
+  // controller.mode = "cycleRandom";
 };
-
-//RENDER LOOP FUNCTION
-
-//listen for note messages
-
-// hello();

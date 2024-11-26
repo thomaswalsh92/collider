@@ -1,12 +1,15 @@
+//libs
 import * as THREE from "three";
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 
+//collider
+import { stagingScene } from "../main";
+
 interface IUseModelProps {
   modelPath: string;
-  textures?: TextureInfo[];
-  scene: THREE.Scene;
   manager: THREE.LoadingManager;
+  textures?: TextureInfo[];
 }
 
 //note - manual list of allowed texture types until I figure out how to insert these values based on the MeshStandardMaterialsParams type
@@ -22,7 +25,6 @@ type TextureInfo = {
 export const useModel = async ({
   modelPath,
   textures,
-  scene,
   manager,
 }: IUseModelProps) => {
   const dracoLoader = new DRACOLoader();
@@ -62,16 +64,30 @@ export const useModel = async ({
                 mesh.material = mat;
                 mesh.userData = { importedMesh: true };
                 mesh.receiveShadow = true;
-                scene.add(mesh);
+                stagingScene.add(mesh);
               });
             } catch (err) {
-              console.log("error loading model: ", err);
+              console.log("error loading model with textures: ", err);
             }
           }
         });
       });
     } catch (err) {
       console.log("error loading texture: ", err);
+    }
+  } else {
+    try {
+      modelLoader.load(modelPath, (gltf) => {
+        //pretty dirty cast but it works ok and there is a missing/incorrect type for gltf
+        const mesh = gltf.scene.children[0] as unknown as THREE.Mesh;
+        const mat = new THREE.MeshStandardMaterial();
+        mesh.material = mat;
+        mesh.userData = { importedMesh: true };
+        mesh.receiveShadow = true;
+        stagingScene.add(mesh);
+      });
+    } catch (err) {
+      console.log("error loading model without textures:", err);
     }
   }
 };
