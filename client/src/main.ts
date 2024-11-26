@@ -5,6 +5,7 @@ import * as TWEEN from "@tweenjs/tween.js";
 //collider
 import "./main.css";
 import { Rings } from "./visual-components/Rings";
+import { Controller } from "./Controller";
 
 //loading manager used by useModel
 export const manager = new THREE.LoadingManager();
@@ -18,7 +19,7 @@ export const scene = new THREE.Scene();
 scene.background = new THREE.Color("#09080f");
 
 //render config
-const renderer = new THREE.WebGLRenderer({ antialias: true }); // turn on antialias
+export const renderer = new THREE.WebGLRenderer({ antialias: true }); // turn on antialias
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); //set pixel ratio
 renderer.setSize(window.innerWidth, window.innerHeight); // make it full screen
 renderer.shadowMap.enabled = true;
@@ -27,7 +28,7 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 container.appendChild(renderer.domElement); // add the renderer to html div
 
 //cam config
-const camera = new THREE.PerspectiveCamera(
+export const camera = new THREE.PerspectiveCamera(
   35,
   window.innerWidth / window.innerHeight,
   1,
@@ -58,30 +59,18 @@ scene.add(sunLight);
 
 //load models for all components
 //todo add a Controller method which will load models from a list. Maybe JSON?
-const rings = new Rings();
-rings.loadModels();
-
+const controller = new Controller();
+controller.loadModels();
 //this handler runs when all assets are loaded. From here we can start the app.
 manager.onLoad = () => {
-  rings.initComponent();
-  rings.initOSC();
-  start();
+  controller.initComponents();
+  controller.initOSC();
+  startApp();
 };
 
 //start app with list of all imported objects
-const start = () => {
-  const renderLoop = () => {
-    requestAnimationFrame(renderLoop); //loop the render function
-    renderer.render(scene, camera); // render the scene using the camera
-
-    //todo refactor here to start Controller class which will control the swapping in and out of different components
-    rings.animateRing1();
-    rings.animateRing2();
-    rings.animateRing3();
-    rings.updateTweens();
-  };
-
-  renderLoop(); //start rendering
+const startApp = () => {
+  controller.start();
 };
 
 //RENDER LOOP FUNCTION

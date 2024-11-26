@@ -8,15 +8,27 @@ import { useModel } from "../utils/useModel";
 import { useOSC } from "../utils/useOSC";
 
 export class Rings {
+  //models
   ring1: THREE.Object3D<THREE.Object3DEventMap> | undefined = undefined;
   ring2: THREE.Object3D<THREE.Object3DEventMap> | undefined = undefined;
   ring3: THREE.Object3D<THREE.Object3DEventMap> | undefined = undefined;
-  light: THREE.PointLight = new THREE.PointLight("#ff0011", 0);
-  latestNote: number = 1;
 
+  //lights
+  light: THREE.PointLight = new THREE.PointLight("#ff0011", 0);
+
+  //animation props
+  //model
   minSpinRate: number = 0.2;
   maxSpinRate: number = 3;
   variableSpinRate: number = this.minSpinRate;
+
+  //aniamtion props
+  //lights
+  maxIntensity: number = 10;
+  minIntensity: number = 0;
+
+  //tweens
+  //model
   spinRateTweenUp = new TWEEN.Tween({ rate: this.minSpinRate })
     .to({ rate: this.maxSpinRate }, 400)
     .onUpdate(({ rate }) => {
@@ -28,8 +40,8 @@ export class Rings {
       this.variableSpinRate = rate;
     });
 
-  maxIntensity: number = 10;
-  minIntensity: number = 0;
+  //tweens
+  //lights
   lightPulseTween = new TWEEN.Tween({ intensity: this.maxIntensity })
     .to(
       {
@@ -105,6 +117,13 @@ export class Rings {
   }
 
   //called by anim loop
+  animate() {
+    this.animateRing1();
+    this.animateRing2();
+    this.animateRing3();
+    this.updateTweens();
+  }
+
   animateRing1() {
     this.ring1?.rotateX(0.004 * this.variableSpinRate);
     this.ring1?.rotateY(0.003 * this.variableSpinRate);
