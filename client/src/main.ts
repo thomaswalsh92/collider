@@ -16,7 +16,8 @@ export const camera = new THREE.PerspectiveCamera(
   1,
   100
 );
-export const manager = new THREE.LoadingManager();
+export const modelManager = new THREE.LoadingManager();
+export const textureManager = new THREE.LoadingManager();
 // export let BPM: number;
 
 //div creation
@@ -58,12 +59,16 @@ sunLight.position.set(-69, 44, 14);
 sunLight.castShadow = true;
 scene.add(sunLight);
 
-//load models for all components
 const controller = new Controller();
+
+//preload textures
+controller.loadTextures();
+
+//preload models
 controller.loadModels();
 
 //this handler runs when all assets are loaded. From here we can start the app.
-manager.onLoad = () => {
+modelManager.onLoad = () => {
   controller.initComponents();
   controller.initOSC();
   startApp();

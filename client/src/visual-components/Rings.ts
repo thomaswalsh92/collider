@@ -3,12 +3,15 @@ import * as THREE from "three";
 import * as TWEEN from "@tweenjs/tween.js";
 
 //collider
-import { manager, scene, stagingScene } from "../main";
+import { modelManager, textureManager, scene, stagingScene } from "../main";
 import { useModel } from "../utils/useModel";
 import { useOSC } from "../utils/useOSC";
+import { useTexture } from "../utils/useTexture";
 // import { sixteenthToBpm } from "../utils/sixteenthToBpm";
 
 export class Rings {
+  //textures
+  textures: THREE.Texture[] = [];
   //models
   ring1: THREE.Object3D<THREE.Object3DEventMap> | undefined = undefined;
   ring2: THREE.Object3D<THREE.Object3DEventMap> | undefined = undefined;
@@ -55,6 +58,27 @@ export class Rings {
       this.light.intensity = intensity;
     });
 
+  //
+  loadTextures() {
+    this.textures = useTexture(
+      [
+        {
+          path: "textures/ring3-diffuse.png",
+          type: "map",
+        },
+        {
+          path: "textures/ring3-roughnessMap.png",
+          type: "roughnessMap",
+        },
+        {
+          path: "textures/ring3-normalMap.png",
+          type: "normalMap",
+        },
+      ],
+      textureManager
+    );
+  }
+
   //run at load models step
   loadModels() {
     useModel({
@@ -64,7 +88,7 @@ export class Rings {
       //   { path: "textures/ring1-roughnessMap.png", type: "roughnessMap" },
       //   { path: "textures/ring1-normalMap.png", type: "normalMap" },
       // ],
-      manager: manager,
+      manager: modelManager,
     });
     useModel({
       modelPath: "models/gltf/ring2.glb",
@@ -73,7 +97,7 @@ export class Rings {
       //   { path: "textures/ring2-roughnessMap.png", type: "roughnessMap" },
       //   { path: "textures/ring2-normalMap.png", type: "normalMap" },
       // ],
-      manager: manager,
+      manager: modelManager,
     });
     useModel({
       modelPath: "models/gltf/ring3.glb",
@@ -82,11 +106,11 @@ export class Rings {
       //   { path: "textures/ring3-roughnessMap.png", type: "roughnessMap" },
       //   { path: "textures/ring3-normalMap.png", type: "normalMap" },
       // ],
-      material: new THREE.MeshPhysicalMaterial({
-        color: new THREE.Color("red"),
-        transmission: 1,
-      }),
-      manager: manager,
+      // material: new THREE.MeshPhysicalMaterial({
+      //   color: new THREE.Color("red"),
+      //   transmission: 1,
+      // }),
+      manager: modelManager,
     });
   }
 

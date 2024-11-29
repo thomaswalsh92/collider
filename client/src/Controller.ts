@@ -12,6 +12,13 @@ export class Controller {
   visualComponents = [rings];
   activeComponent: number = 0;
   mode: ControllerModes = "randomCycle";
+
+  loadTextures() {
+    this.visualComponents.forEach((component) => {
+      component.loadTextures();
+    });
+  }
+
   loadModels() {
     this.visualComponents.forEach((component) => {
       component.loadModels();
@@ -36,6 +43,7 @@ export class Controller {
 
   start() {
     this.visualComponents[this.activeComponent].mountComponent();
+
     const renderLoop = () => {
       requestAnimationFrame(renderLoop); //loop the render function
       renderer.render(scene, camera); // render the scene using the camera
