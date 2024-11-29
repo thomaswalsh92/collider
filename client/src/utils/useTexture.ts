@@ -7,11 +7,10 @@ type TextureInfo = {
   type: AllowedTextureTypes;
 };
 
-export const useTexture = (
-  textures: TextureInfo[],
-  manager: THREE.LoadingManager
-) => {
-  const loader = new THREE.TextureLoader(manager);
+interface ITextures {}
+
+export const useTexture = (textures: TextureInfo[]) => {
+  const loader = new THREE.TextureLoader();
   const loadedTextures: THREE.Texture[] = [];
   textures.forEach((tex, index) => {
     loader.load(tex.path, (loadedTex) => {

@@ -11,11 +11,13 @@ import { useTexture } from "../utils/useTexture";
 
 export class Rings {
   //textures
-  textures: THREE.Texture[] = [];
+  ring1textures: THREE.Texture[] = [];
+  ring2textures: THREE.Texture[] = [];
+  ring3textures: THREE.Texture[] = [];
   //models
-  ring1: THREE.Object3D<THREE.Object3DEventMap> | undefined = undefined;
-  ring2: THREE.Object3D<THREE.Object3DEventMap> | undefined = undefined;
-  ring3: THREE.Object3D<THREE.Object3DEventMap> | undefined = undefined;
+  ring1: THREE.Mesh | undefined = undefined;
+  ring2: THREE.Mesh | undefined = undefined;
+  ring3: THREE.Mesh | undefined = undefined;
 
   //lights
   light: THREE.PointLight = new THREE.PointLight("#ff0011", 0);
@@ -59,69 +61,123 @@ export class Rings {
     });
 
   //
+
   loadTextures() {
-    this.textures = useTexture(
-      [
-        {
-          path: "textures/ring3-diffuse.png",
-          type: "map",
-        },
-        {
-          path: "textures/ring3-roughnessMap.png",
-          type: "roughnessMap",
-        },
-        {
-          path: "textures/ring3-normalMap.png",
-          type: "normalMap",
-        },
-      ],
-      textureManager
-    );
+    this.ring1textures = useTexture([
+      {
+        path: "textures/ring1-diffuse.png",
+        type: "map",
+      },
+      {
+        path: "textures/ring1-roughnessMap.png",
+        type: "roughnessMap",
+      },
+      {
+        path: "textures/ring1-normalMap.png",
+        type: "normalMap",
+      },
+    ]);
+
+    this.ring2textures = useTexture([
+      {
+        path: "textures/ring2-diffuse.png",
+        type: "map",
+      },
+      {
+        path: "textures/ring2-roughnessMap.png",
+        type: "roughnessMap",
+      },
+      {
+        path: "textures/ring2-normalMap.png",
+        type: "normalMap",
+      },
+    ]);
+
+    this.ring3textures = useTexture([
+      {
+        path: "textures/ring3-diffuse.png",
+        type: "map",
+      },
+      {
+        path: "textures/ring3-roughnessMap.png",
+        type: "roughnessMap",
+      },
+      {
+        path: "textures/ring3-normalMap.png",
+        type: "normalMap",
+      },
+    ]);
   }
 
   //run at load models step
   loadModels() {
     useModel({
       modelPath: "models/gltf/ring1.glb",
-      // textures: [
-      //   { path: "textures/ring1-diffuse.png", type: "map" },
-      //   { path: "textures/ring1-roughnessMap.png", type: "roughnessMap" },
-      //   { path: "textures/ring1-normalMap.png", type: "normalMap" },
-      // ],
       manager: modelManager,
     });
     useModel({
       modelPath: "models/gltf/ring2.glb",
-      // textures: [
-      //   { path: "textures/ring2-diffuse.png", type: "map" },
-      //   { path: "textures/ring2-roughnessMap.png", type: "roughnessMap" },
-      //   { path: "textures/ring2-normalMap.png", type: "normalMap" },
-      // ],
       manager: modelManager,
     });
     useModel({
       modelPath: "models/gltf/ring3.glb",
-      // textures: [
-      //   { path: "textures/ring3-diffuse.png", type: "map" },
-      //   { path: "textures/ring3-roughnessMap.png", type: "roughnessMap" },
-      //   { path: "textures/ring3-normalMap.png", type: "normalMap" },
-      // ],
-      // material: new THREE.MeshPhysicalMaterial({
-      //   color: new THREE.Color("red"),
-      //   transmission: 1,
-      // }),
       manager: modelManager,
     });
   }
 
   //run at initialise step
   initComponent() {
-    this.ring1 = stagingScene.children.find((x) => x.name === "ring1");
-    this.ring1?.position.set(0, 0, 0);
-    this.ring2 = stagingScene.children.find((x) => x.name === "ring2");
-    this.ring2?.position.set(0, 0, 0);
-    this.ring3 = stagingScene.children.find((x) => x.name === "ring3");
-    this.ring3?.position.set(0, 0, 0);
+    const ring1 = stagingScene.children.find(
+      (x) => x.name === "ring1"
+    ) as unknown as THREE.Mesh;
+    ring1.position.set(0, 0, 0);
+    const ring1Mat = new THREE.MeshPhysicalMaterial({ color: "#32DE8A" });
+    // ring1Mat.map = this.ring1textures.find(
+    //   (x) => x.name === "map"
+    // ) as THREE.Texture;
+    ring1Mat.roughnessMap = this.ring1textures.find(
+      (x) => x.name === "roughnessMap"
+    ) as THREE.Texture;
+    ring1Mat.normalMap = this.ring1textures.find(
+      (x) => x.name === "normalMap"
+    ) as THREE.Texture;
+    ring1.material = ring1Mat;
+    this.ring1 = ring1;
+
+    const ring2 = stagingScene.children.find(
+      (x) => x.name === "ring2"
+    ) as unknown as THREE.Mesh;
+    ring2.position.set(0, 0, 0);
+    const ring2Mat = new THREE.MeshPhysicalMaterial({ color: "#009FF5" });
+    // ring2Mat.map = this.ring2textures.find(
+    //   (x) => x.name === "map"
+    // ) as THREE.Texture;
+    ring2Mat.roughnessMap = this.ring2textures.find(
+      (x) => x.name === "roughnessMap"
+    ) as THREE.Texture;
+    ring2Mat.normalMap = this.ring2textures.find(
+      (x) => x.name === "normalMap"
+    ) as THREE.Texture;
+    ring2.material = ring2Mat;
+    this.ring2 = ring2;
+
+    const ring3 = stagingScene.children.find(
+      (x) => x.name === "ring3"
+    ) as unknown as THREE.Mesh;
+    ring3.position.set(0, 0, 0);
+    const ring3Mat = new THREE.MeshPhysicalMaterial({ color: "#FF9B71" });
+    // ring3Mat.map = this.ring3textures.find(
+    //   (x) => x.name === "map"
+    // ) as THREE.Texture;
+    ring3Mat.roughnessMap = this.ring3textures.find(
+      (x) => x.name === "roughnessMap"
+    ) as THREE.Texture;
+    ring3Mat.normalMap = this.ring3textures.find(
+      (x) => x.name === "normalMap"
+    ) as THREE.Texture;
+    ring3.material = ring3Mat;
+    this.ring3 = ring3;
+
     this.light.castShadow = true;
     this.light.shadow.camera.near = 0.1;
     this.light.shadow.camera.far = 100;
