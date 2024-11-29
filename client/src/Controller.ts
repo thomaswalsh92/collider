@@ -1,15 +1,18 @@
 //visual-components
 import { camera, renderer, scene } from "./main";
+import { useOSC } from "./utils/useOSC";
 import { Rings } from "./visual-components/Rings";
+import { Spheres } from "./visual-components/Sphere";
 // import { VisualComponentBase } from "./visual-components/VisualComponentBase";
 
 const rings = new Rings();
+const spheres = new Spheres();
 
 //todo add different controller modes
 export type ControllerModes = "randomCycle" | "OSCTriggered";
 
 export class Controller {
-  visualComponents = [rings];
+  visualComponents = [rings, spheres];
   activeComponent: number = 0;
   mode: ControllerModes = "randomCycle";
 
@@ -31,7 +34,7 @@ export class Controller {
     });
   }
 
-  initOSC() {
+  initComponentOSC() {
     this.visualComponents.forEach((component) => {
       component.initOSC();
     });

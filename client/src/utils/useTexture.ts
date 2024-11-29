@@ -7,8 +7,6 @@ type TextureInfo = {
   type: AllowedTextureTypes;
 };
 
-interface ITextures {}
-
 export const useTexture = (textures: TextureInfo[]) => {
   const loader = new THREE.TextureLoader();
   const loadedTextures: THREE.Texture[] = [];

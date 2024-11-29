@@ -4,7 +4,6 @@ import * as THREE from "three";
 //collider
 import "./main.css";
 import { Controller } from "./Controller";
-import { useOSC } from "./utils/useOSC";
 
 //!!GLOBAL VARIABLES
 export const scene = new THREE.Scene();
@@ -70,7 +69,7 @@ controller.loadModels();
 //this handler runs when all assets are loaded. From here we can start the app.
 modelManager.onLoad = () => {
   controller.initComponents();
-  controller.initOSC();
+  controller.initComponentOSC();
   startApp();
 };
 
