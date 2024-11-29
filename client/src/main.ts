@@ -3,23 +3,30 @@ import * as THREE from "three";
 
 //collider
 import "./main.css";
-import { Rings } from "./visual-components/Rings";
 import { Controller } from "./Controller";
+import { useOSC } from "./utils/useOSC";
 
-//loading manager used by useModel
+//!!GLOBAL VARIABLES
+export const scene = new THREE.Scene();
+export const stagingScene = new THREE.Scene();
+export const renderer = new THREE.WebGLRenderer({ antialias: true }); // turn on antialias
+export const camera = new THREE.PerspectiveCamera(
+  35,
+  window.innerWidth / window.innerHeight,
+  1,
+  100
+);
 export const manager = new THREE.LoadingManager();
+// export let BPM: number;
 
 //div creation
 const container = document.createElement("div");
 document.body.appendChild(container);
 
 //scene creation
-export const scene = new THREE.Scene();
-export const stagingScene = new THREE.Scene();
 scene.background = new THREE.Color("#09080f");
 
 //render config
-export const renderer = new THREE.WebGLRenderer({ antialias: true }); // turn on antialias
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); //set pixel ratio
 renderer.setSize(window.innerWidth, window.innerHeight); // make it full screen
 renderer.shadowMap.enabled = true;
@@ -28,12 +35,6 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 container.appendChild(renderer.domElement); // add the renderer to html div
 
 //cam config
-export const camera = new THREE.PerspectiveCamera(
-  35,
-  window.innerWidth / window.innerHeight,
-  1,
-  100
-);
 camera.position.set(0, 0, 30);
 scene.add(camera);
 

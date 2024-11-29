@@ -6,6 +6,7 @@ import * as TWEEN from "@tweenjs/tween.js";
 import { manager, scene, stagingScene } from "../main";
 import { useModel } from "../utils/useModel";
 import { useOSC } from "../utils/useOSC";
+// import { sixteenthToBpm } from "../utils/sixteenthToBpm";
 
 export class Rings {
   //models
@@ -58,29 +59,33 @@ export class Rings {
   loadModels() {
     useModel({
       modelPath: "models/gltf/ring1.glb",
-      textures: [
-        { path: "textures/ring1-diffuse.png", type: "map" },
-        { path: "textures/ring1-roughnessMap.png", type: "roughnessMap" },
-        { path: "textures/ring1-normalMap.png", type: "normalMap" },
-      ],
+      // textures: [
+      //   { path: "textures/ring1-diffuse.png", type: "map" },
+      //   { path: "textures/ring1-roughnessMap.png", type: "roughnessMap" },
+      //   { path: "textures/ring1-normalMap.png", type: "normalMap" },
+      // ],
       manager: manager,
     });
     useModel({
       modelPath: "models/gltf/ring2.glb",
-      textures: [
-        { path: "textures/ring2-diffuse.png", type: "map" },
-        { path: "textures/ring2-roughnessMap.png", type: "roughnessMap" },
-        { path: "textures/ring2-normalMap.png", type: "normalMap" },
-      ],
+      // textures: [
+      //   { path: "textures/ring2-diffuse.png", type: "map" },
+      //   { path: "textures/ring2-roughnessMap.png", type: "roughnessMap" },
+      //   { path: "textures/ring2-normalMap.png", type: "normalMap" },
+      // ],
       manager: manager,
     });
     useModel({
       modelPath: "models/gltf/ring3.glb",
-      textures: [
-        { path: "textures/ring3-diffuse.png", type: "map" },
-        { path: "textures/ring3-roughnessMap.png", type: "roughnessMap" },
-        { path: "textures/ring3-normalMap.png", type: "normalMap" },
-      ],
+      // textures: [
+      //   { path: "textures/ring3-diffuse.png", type: "map" },
+      //   { path: "textures/ring3-roughnessMap.png", type: "roughnessMap" },
+      //   { path: "textures/ring3-normalMap.png", type: "normalMap" },
+      // ],
+      material: new THREE.MeshPhysicalMaterial({
+        color: new THREE.Color("red"),
+        transmission: 1,
+      }),
       manager: manager,
     });
   }
@@ -109,7 +114,6 @@ export class Rings {
     });
 
     useOSC("note3", () => {
-      console.log("note3");
       this.spinRateTweenUp.stop();
       this.spinRateTweenDown.start();
     });

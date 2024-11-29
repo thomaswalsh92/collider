@@ -3,6 +3,9 @@
 //todo figure out correct inheritance
 
 export class VisualComponentBase {
+  //load all materials
+  loadMaterials() {}
+
   //load all models using useModel
   loadModels() {}
 
