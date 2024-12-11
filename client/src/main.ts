@@ -20,8 +20,16 @@ export const textureManager = new THREE.LoadingManager();
 // export let BPM: number;
 
 //div creation
-const container = document.createElement("div");
-document.body.appendChild(container);
+const threeContainer = document.createElement("div");
+document.body.appendChild(threeContainer);
+threeContainer.style.position = "absolute";
+threeContainer.style.top = "0";
+threeContainer.style.left = "0";
+const p5Container = document.createElement("div");
+p5Container.style.position = "absolute";
+p5Container.style.top = "0";
+p5Container.style.left = "0";
+document.body.appendChild(p5Container);
 
 //scene creation
 scene.background = new THREE.Color("#09080f");
@@ -32,7 +40,7 @@ renderer.setSize(window.innerWidth, window.innerHeight); // make it full screen
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 // renderer.outputEncoding = THREE.sRGBEncoding; // set color encoding
-container.appendChild(renderer.domElement); // add the renderer to html div
+threeContainer.appendChild(renderer.domElement); // add the renderer to html div
 
 //cam config
 camera.position.set(0, 0, 30);
