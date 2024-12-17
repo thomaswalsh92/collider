@@ -1,5 +1,10 @@
 //libs
 import * as THREE from "three";
+import P5 from "p5";
+// import "p5/lib/addons/p5.sound";	// Include if needed
+
+// DEMO: A sample class implementation
+import MyCircle from "../src/visual-components/MyCircle";
 
 //collider
 import "./main.css";
@@ -20,16 +25,17 @@ export const textureManager = new THREE.LoadingManager();
 // export let BPM: number;
 
 //div creation
-const threeContainer = document.createElement("div");
-document.body.appendChild(threeContainer);
-threeContainer.style.position = "absolute";
-threeContainer.style.top = "0";
-threeContainer.style.left = "0";
-const p5Container = document.createElement("div");
-p5Container.style.position = "absolute";
-p5Container.style.top = "0";
-p5Container.style.left = "0";
-document.body.appendChild(p5Container);
+const threeContainer = document.getElementById("threeContainer");
+// const threeContainer = document.createElement("div");
+// document.body.appendChild(threeContainer);
+// threeContainer.style.position = "absolute";
+// threeContainer.style.top = "0";
+// threeContainer.style.left = "0";
+// const p5Container = document.createElement("div");
+// p5Container.style.position = "absolute";
+// p5Container.style.top = "0";
+// p5Container.style.left = "0";
+// document.body.appendChild(p5Container);
 
 //scene creation
 scene.background = new THREE.Color("#09080f");
@@ -40,7 +46,7 @@ renderer.setSize(window.innerWidth, window.innerHeight); // make it full screen
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 // renderer.outputEncoding = THREE.sRGBEncoding; // set color encoding
-threeContainer.appendChild(renderer.domElement); // add the renderer to html div
+threeContainer && threeContainer.appendChild(renderer.domElement); // add the renderer to html div
 
 //cam config
 camera.position.set(0, 0, 30);
@@ -56,6 +62,39 @@ window.addEventListener("resize", () => {
   renderer.setSize(width, height);
   renderer.setPixelRatio(2);
 });
+
+//p5 config
+const P5Sketch = (p5: P5) => {
+  // DEMO: Prepare an array of MyCircle instances
+  const myCircles: MyCircle[] = [];
+
+  // The sketch setup method
+  p5.setup = () => {
+    // Creating and positioning the canvas
+    const canvas = p5.createCanvas(1800, 1800);
+    console.log(canvas);
+    canvas.parent("app");
+
+    // Configuring the canvas
+    p5.background("white");
+
+    // DEMO: Create three circles in the center of the canvas
+    for (let i = 1; i < 4; i++) {
+      const p = p5.width / 4;
+      const circlePos = p5.createVector(p * i, p5.height / 2);
+      const size = i % 2 !== 0 ? 24 : 32;
+      myCircles.push(new MyCircle(p5, circlePos, size));
+    }
+  };
+
+  // The sketch draw method
+  p5.draw = () => {
+    // DEMO: Let the circle instances draw themselves
+    myCircles.forEach((circle) => circle.draw());
+  };
+};
+
+new P5(P5Sketch);
 
 //todo find a place for these lights
 const ambient = new THREE.AmbientLight(0xa0a0fc, 0.82);

@@ -20,6 +20,7 @@
     "html-webpack-plugin": "^5.5.0",
     "lil-gui": "^0.11.0",
     "mini-css-extract-plugin": "^2.4.3",
+    "p5": "^1.11.2",
     "portfinder-sync": "0.0.2",
     "raw-loader": "^4.0.2",
     "socket.io-client": "^4.8.1",
@@ -33,6 +34,7 @@
     "webpack-merge": "^5.8.0"
   },
   "devDependencies": {
+    "@types/p5": "^1.7.6",
     "@types/three": "^0.170.0"
   }
 }
