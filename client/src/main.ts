@@ -26,6 +26,7 @@ export const textureManager = new THREE.LoadingManager();
 
 //div creation
 const threeContainer = document.getElementById("threeContainer");
+const p5Container = document.getElementById("p5Container");
 // const threeContainer = document.createElement("div");
 // document.body.appendChild(threeContainer);
 // threeContainer.style.position = "absolute";
@@ -63,7 +64,7 @@ window.addEventListener("resize", () => {
   renderer.setPixelRatio(2);
 });
 
-//p5 config
+//todo REFACTOR p5 config
 const P5Sketch = (p5: P5) => {
   // DEMO: Prepare an array of MyCircle instances
   const myCircles: MyCircle[] = [];
@@ -73,7 +74,7 @@ const P5Sketch = (p5: P5) => {
     // Creating and positioning the canvas
     const canvas = p5.createCanvas(1800, 1800);
     console.log(canvas);
-    canvas.parent("app");
+    canvas.parent("p5Container");
 
     // Configuring the canvas
     p5.background("white");
@@ -114,14 +115,14 @@ controller.loadTextures();
 controller.loadModels();
 
 //this handler runs when all assets are loaded. From here we can start the app.
-modelManager.onLoad = () => {
-  controller.initComponents();
-  controller.initComponentOSC();
-  startApp();
-};
+// modelManager.onLoad = () => {
+//   controller.initComponents();
+//   controller.initComponentOSC();
+//   startApp();
+// };
 
 //start controller on load
-const startApp = () => {
-  controller.start();
-  // controller.mode = "cycleRandom";
-};
+// const startApp = () => {
+//   controller.start();
+//   // controller.mode = "cycleRandom";
+// };
