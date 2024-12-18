@@ -25,18 +25,21 @@ export const textureManager = new THREE.LoadingManager();
 // export let BPM: number;
 
 //div creation
-const threeContainer = document.getElementById("threeContainer");
-const p5Container = document.getElementById("p5Container");
-// const threeContainer = document.createElement("div");
-// document.body.appendChild(threeContainer);
-// threeContainer.style.position = "absolute";
-// threeContainer.style.top = "0";
-// threeContainer.style.left = "0";
-// const p5Container = document.createElement("div");
-// p5Container.style.position = "absolute";
-// p5Container.style.top = "0";
-// p5Container.style.left = "0";
-// document.body.appendChild(p5Container);
+// const threeContainer = document.getElementById("threeContainer");
+// const p5Container = document.getElementById("p5Container");
+const threeContainer = document.createElement("div");
+document.body.appendChild(threeContainer);
+threeContainer.style.position = "absolute";
+threeContainer.style.top = "0";
+threeContainer.style.left = "0";
+threeContainer.id = "threeContainer";
+const p5Container = document.createElement("div");
+p5Container.style.position = "absolute";
+p5Container.style.top = "0";
+p5Container.style.left = "0";
+p5Container.style.zIndex = "1";
+p5Container.id = "p5Container";
+document.body.appendChild(p5Container);
 
 //scene creation
 scene.background = new THREE.Color("#09080f");
@@ -72,12 +75,12 @@ const P5Sketch = (p5: P5) => {
   // The sketch setup method
   p5.setup = () => {
     // Creating and positioning the canvas
-    const canvas = p5.createCanvas(1800, 1800);
+    const canvas = p5.createCanvas(window.innerWidth, window.innerHeight);
     console.log(canvas);
     canvas.parent("p5Container");
 
     // Configuring the canvas
-    p5.background("white");
+    // p5.background();
 
     // DEMO: Create three circles in the center of the canvas
     for (let i = 1; i < 4; i++) {
@@ -115,14 +118,14 @@ controller.loadTextures();
 controller.loadModels();
 
 //this handler runs when all assets are loaded. From here we can start the app.
-// modelManager.onLoad = () => {
-//   controller.initComponents();
-//   controller.initComponentOSC();
-//   startApp();
-// };
+modelManager.onLoad = () => {
+  controller.initComponents();
+  controller.initComponentOSC();
+  startApp();
+};
 
 //start controller on load
-// const startApp = () => {
-//   controller.start();
-//   // controller.mode = "cycleRandom";
-// };
+const startApp = () => {
+  controller.start();
+  // controller.mode = "cycleRandom";
+};
