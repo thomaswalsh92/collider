@@ -25,8 +25,6 @@ export const textureManager = new THREE.LoadingManager();
 // export let BPM: number;
 
 //div creation
-// const threeContainer = document.getElementById("threeContainer");
-// const p5Container = document.getElementById("p5Container");
 const threeContainer = document.createElement("div");
 document.body.appendChild(threeContainer);
 threeContainer.style.position = "absolute";
@@ -76,7 +74,6 @@ const P5Sketch = (p5: P5) => {
   p5.setup = () => {
     // Creating and positioning the canvas
     const canvas = p5.createCanvas(window.innerWidth, window.innerHeight);
-    console.log(canvas);
     canvas.parent("p5Container");
 
     // Configuring the canvas
@@ -96,6 +93,10 @@ const P5Sketch = (p5: P5) => {
     // DEMO: Let the circle instances draw themselves
     myCircles.forEach((circle) => circle.draw());
   };
+
+  p5.remove = () => {};
+
+  console.log(p5);
 };
 
 new P5(P5Sketch);

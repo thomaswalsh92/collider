@@ -13,7 +13,7 @@ export type ControllerModes = "randomCycle" | "OSCTriggered";
 
 export class Controller {
   visualComponents = [rings, spheres];
-  activeComponent: number = 0;
+  activeComponent: number = 1;
   mode: ControllerModes = "randomCycle";
 
   loadTextures() {
